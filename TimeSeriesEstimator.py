@@ -136,7 +136,8 @@ class TimeSeriesRegressor(TimeSeriesEstimator, RegressorMixin):
         else:
             return self.base_estimator.predict(X_new)
 
-    def forecast(self, X, n_steps):
+
+    def forecast(self, X, n_steps, noise=0, n_paths=1, combine=None):
         '''
         Forecast using a training dataset, n_steps into the future
         This is acchomplished by feeding the output data back into the regressor
@@ -152,14 +153,22 @@ class TimeSeriesRegressor(TimeSeriesEstimator, RegressorMixin):
         if is_pandas:
             X=X.as_matrix()
 
-        out = np.empty((n_steps, X.shape[1]))
-        previous = X[-self.n_prev:]
-        for i in range(n_steps):
-            next_step = self.predict(np.array([previous.ravel()]), preprocessed=True)
-            out[i, :] = next_step
-            previous = np.vstack((previous[1:], next_step))
+        outs = []
+        for i in range(n_paths):
+            out = np.empty((n_steps, X.shape[1]))
+            previous = X[-self.n_prev:]
+            for i in range(n_steps):
+                next_step = self.predict(np.array([previous.ravel()]), preprocessed=True)
+                out[i, :] = next_step+next_step*np.random.randn(*next_step.shape)*noise
+                previous = np.vstack((previous[1:], next_step))
+            outs.append(out)
 
-        return out
+        if combine == 'mean' and n_paths > 1:
+            return np.array(outs).mean(axis=0)
+        elif n_paths > 1:
+            return np.array(outs)
+        else:
+            return out
 
 
 def time_series_split(X, test_size=.2, output_numpy=True):

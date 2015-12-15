@@ -19,20 +19,19 @@ X = datasets('sp500')
 names = list(X.columns.values)
 X_train, X_test = time_series_split(X)
 
-for n_prev in range(1, 5):
-    tsr = TimeSeriesRegressor(LinearRegression(), n_prev=n_prev)
-    tsr.fit(X_train)
-    fc = tsr.forecast(X_train, len(X_test))
+n_prev = 2
+tsr = TimeSeriesRegressor(LinearRegression(), n_prev=n_prev)
+tsr.fit(X_train)
+fc = tsr.forecast(X_train, len(X_test), noise=.2, n_paths=200)
+fc_mean = tsr.forecast(X_train, len(X_test), noise=.2, n_paths=200, combine='mean')
+#or for speed
+#fc_mean = np.mean(fc, axis=0)
 
-    def changes(X, start=0,end=-1):
-        return np.array([X[end, i] - X[start, i] for i in range(X.shape[1])])
-
-    n_aheads = range(1,len(X_test),1)
-    X_test_changes = [changes(X_test,end=n_ahead) for n_ahead in n_aheads]
-    fc_changes = [changes(fc,end=n_ahead) for n_ahead in n_aheads]
-    mses = [mse(X_test_changes[i],fc_changes[i]) for i in range(len(n_aheads))]
-    cors = [np.corrcoef(X_test_changes[i],fc_changes[i])[0,1] for i in range(len(n_aheads))]
-    plt.plot(n_aheads,cors, label="n_prev={}".format(n_prev))
-
+plt.plot(np.transpose(fc[:, :, 1]), 'r', alpha=.05)
+plt.plot(np.transpose(fc_mean[:, 1]), 'b', label='Mean Forecast')
+plt.plot(X_test[:,  1], 'g', label='Actual Price')
 plt.legend()
+plt.xlabel('days')
+plt.ylabel('Price')
+plt.title('Forecasting Alcoa (AA)')
 plt.show()
