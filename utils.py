@@ -32,14 +32,14 @@ def mse(X1, X2, multioutput='raw_values'):
         return np.mean(np.mean((X1 - X2)**2, axis=0)**.5)
 
 
-def datasets(name, tickers=None):
+def datasets(name, tickers=None, log=False):
     if name == "sp500":
         ##### Real Stock Data
-        print('Using sp500 data')
+        if log: print('Using sp500 data')
         data = load_s_and_p_data(start="2014-1-1", tickers=tickers)
     elif name == "synthetic":
         ##### Synthetic data for testing purposes
-        print('Using Synthetic data')
+        if log: print('Using Synthetic data')
         values = 10000
         s = pd.Series(range(values))
         noise = pd.Series(np.random.randn(values))
@@ -51,14 +51,14 @@ def datasets(name, tickers=None):
         data = pd.DataFrame(d)
     elif name == "jigsaw":
         ##### Easy synthetic data for testing purposes
-        print('Using jigsaw data')
+        if log: print('Using jigsaw data')
         flow = (list(range(1, 10, 1)) + list(range(10, 1, -1))) * 1000
         pdata = pd.DataFrame({"a": flow, "b": flow})
         pdata.b = pdata.b.shift(9)
         data = pdata.iloc[10:] * random.random()  # some noise
     elif name == "linear":
         ##### Easy synthetic data for testing purposes
-        print('Using linear data')
+        if log: print('Using linear data')
         flow = list(range(0, 10000, 2))
         pdata = pd.DataFrame({"a": flow, "b": flow})
         pdata.b = pdata.b + .5
@@ -66,7 +66,7 @@ def datasets(name, tickers=None):
         #pdata.iloc[10:] * random.random()  # some noise
     elif name == "autocorr":
         ##### Easy synthetic data for testing purposes
-        print('Using autocorr data')
+        if log: print('Using autocorr data')
         flow1 = gen_linear_seq(1.01, .002)
         flow2 = gen_linear_seq(1.02, .001)
         pdata = pd.DataFrame({"a": flow1, "b": flow2})
