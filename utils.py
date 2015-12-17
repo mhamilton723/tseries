@@ -1,11 +1,14 @@
-import pandas.io.data as web
+#import pandas.io.data as web
+# pandas.io.data is going to be deprecated. The library is moving to a 
+# stand-alone package, pandas-datareader.
+import pandas_datareader.data as web
 from datetime import datetime
 import pickle
 import os
 import random
 import numpy as np
 import pandas as pd
-
+import sys
 
 
 def access(dictionary,keys):
@@ -86,7 +89,12 @@ def cache(cache_file):
     def cache_decorator(func):
         def func_wrapper(*args, **kwargs):
             if os.path.exists(cache_file):
-                loaded_args, loaded_kwargs, loaded_data = pickle.load(open(cache_file, 'r'))
+                if sys.version_info[0] < 3:
+                    loaded_args, loaded_kwargs, loaded_data = pickle.load(open(cache_file, 'r'))
+                else:
+                    # for python 3.x to read a file pickled by python 2.x
+                    loaded_args, loaded_kwargs, loaded_data = pickle.load(open(cache_file, 'rb'), 
+                                                                          encoding='latin1')
                 load_success = True
             else:
                 load_success = False
@@ -163,8 +171,8 @@ def window_dataset(data, n_prev=1):
 
 def masked_dataset(data, n_prev=3, n_masked=2, predict_ahead=1):
     """
-	data should be pd.DataFrame()
-	"""
+    data should be pd.DataFrame()
+    """
     docX, docY = [], []
     for i in range(len(data) - n_prev - n_masked - predict_ahead):
         x = data.iloc[i:i + n_prev].as_matrix()
@@ -180,8 +188,8 @@ def masked_dataset(data, n_prev=3, n_masked=2, predict_ahead=1):
 
 def prediction_dataset(data, n_samples=50, n_ahead=1):
     """
-	data should be pd.DataFrame()
-	"""
+    data should be pd.DataFrame()
+    """
     docX, docY = [], []
     for i in range(len(data) - n_samples - n_ahead):
         x = data.iloc[i:i + n_samples].as_matrix()
@@ -195,8 +203,8 @@ def prediction_dataset(data, n_samples=50, n_ahead=1):
 
 def seq2seq_dataset(data, n_samples=50, n_ahead=50):
     """
-	data should be pd.DataFrame()
-	"""
+    data should be pd.DataFrame()
+    """
     docX, docY = [], []
     for i in range(len(data) - n_samples - n_ahead):
         x = data.iloc[i:i + n_samples].as_matrix()
@@ -210,8 +218,8 @@ def seq2seq_dataset(data, n_samples=50, n_ahead=50):
 
 def test_train_split(df, test_size=.1, splitting_method='prediction', **kwargs):
     """
-	This just splits data to training and testing parts
-	"""
+    This just splits data to training and testing parts
+    """
 
     ntrn = int(len(df) * (1 - test_size))
 
