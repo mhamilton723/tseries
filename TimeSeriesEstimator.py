@@ -239,7 +239,9 @@ def cascade_cv(n, n_folds, data_size=.8, test_size=.15, number=False):
             #ntrn = int(n * (1 - test_size))
             ntrn = int((end - start) * (1 - test_size))
         elif test_size > 1 and number:
-            ntrn = int(n * data_size - test_size)
+            ntrn = int((end - start) - test_size)
+            if ntrn < 0:
+                raise ValueError("test size is too large, negative number of training examples")
         else:
             raise ValueError("test_size: (frac or Int) and number:(True or False) should be set correctly")
 
