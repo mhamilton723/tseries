@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin, clone
+import warnings
 
 
 class TimeSeriesEstimator(BaseEstimator):
@@ -8,7 +9,7 @@ class TimeSeriesEstimator(BaseEstimator):
     Base Class for Time Series Estimators
     """
 
-    def __init__(self, base_estimator, n_prev=3, n_ahead=1, parallel_models=False, **base_params):
+    def __init__(self, base_estimator, n_prev=1, n_ahead=1, parallel_models=False, **base_params):
         self.base_estimator = base_estimator.set_params(**base_params)
         self.parallel_models = parallel_models
         self.n_prev = n_prev
@@ -229,13 +230,14 @@ def cascade_cv(n, n_folds, data_size=.8, test_size=.15, number=False):
     pairs = []
     shift = int(round((1 - data_size) * n / float(n_folds)))
     if shift < 4:
-        raise (UserWarning("Small Shift warning: Consider less folds, or a smaller data size"))
+        warnings.warn("Small Shift warning: Consider less folds, or a smaller data size")
     for i in range(n_folds):
         start = shift * i
         end = min(start + int(data_size * n), n)
 
         if test_size <= 1 and not number:
-            ntrn = int(n * (1 - test_size))
+            #ntrn = int(n * (1 - test_size))
+            ntrn = int((end - start) * (1 - test_size))
         elif test_size > 1 and number:
             ntrn = int(n * data_size - test_size)
         else:
