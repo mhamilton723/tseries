@@ -1,25 +1,16 @@
-from nose.tools import assert_raises, assert_true, assert_false
-
-import numpy as np
-from scipy import sparse
-from numpy.testing import (assert_array_almost_equal, assert_array_equal,
-                           assert_equal)
+from numpy.testing import assert_equal
 from sklearn.grid_search import GridSearchCV
-
-from TimeSeriesEstimator import *
-from utils import *
-from sklearn.datasets import make_classification, load_digits, make_blobs
-from sklearn.utils.testing import assert_warns, assert_raise_message
-
+from timeseries.time_series_estimator import *
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import ElasticNet
 
-X =np.vstack((np.linspace(1,1000,1000),np.linspace(1,1000,1000)*10)).transpose()
-y = np.linspace(1,1000,1000)*np.linspace(1,1000,1000)
-X_train, X_test = time_series_split(X,test_size=.5)
-y_train, y_test = time_series_split(y,test_size=.5)
+X = np.vstack((np.linspace(1, 1000, 1000), np.linspace(1, 1000, 1000) * 10)).transpose()
+y = np.linspace(1, 1000, 1000) * np.linspace(1, 1000, 1000)
+X_train, X_test = time_series_split(X, test_size=.5)
+y_train, y_test = time_series_split(y, test_size=.5)
 train_size = X_train.shape[0]
 test_size = X_test.shape[0]
+
 
 def test_fit_predict():
     elastic = ElasticNet()
@@ -29,18 +20,20 @@ def test_fit_predict():
     elastic_tsr.fit(X_train, y_train)
     pred_train_2 = elastic_tsr.predict(X_train)  # outputs a numpy array of length: len(X_train)-n_prev
     pred_test_2 = elastic_tsr.predict(X_test)
-    assert_equal(pred_train_2.shape,(train_size-1,))
-    assert_equal(pred_test_2.shape, (test_size-1,))
+    assert_equal(pred_train_2.shape, (train_size - 1,))
+    assert_equal(pred_test_2.shape, (test_size - 1,))
+
 
 def test_n_prev():
-    n_prev=2
+    n_prev = 2
     linear_model = LinearRegression()
     linear_tsr = TimeSeriesRegressor(linear_model, n_prev=n_prev)
     linear_tsr.fit(X_train, y_train)
-    pred_train = linear_tsr.predict(X_train) #outputs a numpy array of length: len(X_train)-n_prev
+    pred_train = linear_tsr.predict(X_train)  # outputs a numpy array of length: len(X_train)-n_prev
     pred_test = linear_tsr.predict(X_test)
-    assert_equal(pred_train.shape,(train_size-n_prev,))
-    assert_equal(pred_test.shape, (test_size-n_prev,))
+    assert_equal(pred_train.shape, (train_size - n_prev,))
+    assert_equal(pred_test.shape, (test_size - n_prev,))
+
 
 def test_n_ahead():
     n_ahead = 3
@@ -49,15 +42,17 @@ def test_n_ahead():
     linear_tsr.fit(X_train, y_train)
     pred_train_2 = linear_tsr.predict(X_train)
     pred_test_2 = linear_tsr.predict(X_test)
-    assert_equal(pred_train_2.shape,(train_size-n_ahead,))
-    assert_equal(pred_test_2.shape, (test_size-n_ahead,))
+    assert_equal(pred_train_2.shape, (train_size - n_ahead,))
+    assert_equal(pred_test_2.shape, (test_size - n_ahead,))
+
 
 def test_forecast():
     n_prev = 3
     tsr = TimeSeriesRegressor(LinearRegression(), n_prev=n_prev)
     tsr.fit(X_train)
     fc = tsr.forecast(X_train, len(X_test))
-    assert_equal(fc.shape,(test_size,2L))
+    assert_equal(fc.shape, (test_size, 2L))
+
 
 def test_pipeline():
     n_prev = 3
@@ -70,12 +65,5 @@ def test_pipeline():
     grid.fit(X_train, y_train)
     pred_train_3 = grid.predict(X_train)  # outputs a numpy array of length: len(X_train)-n_prev
     pred_test_3 = grid.predict(X_test)
-    assert_equal(pred_train_3.shape,(train_size-n_prev,))
+    assert_equal(pred_train_3.shape, (train_size - n_prev,))
     assert_equal(pred_test_3.shape, (test_size - n_prev,))
-
-
-test_fit_predict()
-test_n_prev()
-test_n_ahead()
-test_forecast()
-test_pipeline()
