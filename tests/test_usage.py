@@ -67,3 +67,11 @@ def test_pipeline():
     pred_test_3 = grid.predict(X_test)
     assert_equal(pred_train_3.shape, (train_size - n_prev,))
     assert_equal(pred_test_3.shape, (test_size - n_prev,))
+
+if __name__ == '__main__':
+    test_fit_predict()
+    test_forecast()
+    test_n_ahead()
+    test_n_prev()
+    test_pipeline()
+

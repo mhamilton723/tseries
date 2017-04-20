@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.grid_search import GridSearchCV
 from utils import datasets, safe_shape
-from TimeSeriesEstimator import TimeSeriesRegressor, time_series_split, time_series_cv, cascade_cv
+from timeseries import TimeSeriesRegressor, time_series_split, time_series_cv, cascade_cv
 from sklearn.cross_validation import KFold
 
 def mse(X1, X2, multioutput='raw_values'):
