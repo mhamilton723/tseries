@@ -1,9 +1,9 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
-    name='timeseries',
+    name='tseries',
     version='0.1.1',
-    packages=['timeseries'],
+    packages=['tseries'],
     url='https://github.com/mhamilton723/TimeSeriesRegressor',
     license='',
     author='Mark Hamilton',

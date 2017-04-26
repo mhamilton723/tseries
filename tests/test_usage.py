@@ -1,6 +1,6 @@
 from numpy.testing import assert_equal
 from sklearn.grid_search import GridSearchCV
-from timeseries.time_series_estimator import *
+from tseries.time_series_estimator import *
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import ElasticNet
 
