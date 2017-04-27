@@ -40,6 +40,8 @@ class DoublePipeline(BaseEstimator):
 
     def predict(self, X):
         Y_trans = self.x_pipe_.predict(X)
+        if len(Y_trans.shape)==1:
+            Y_trans = np.expand_dims(Y_trans,1)
         Y = self.y_pipe_.inverse_transform(Y_trans)
         return Y
 

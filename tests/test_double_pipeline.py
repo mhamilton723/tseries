@@ -5,22 +5,20 @@ import numpy as np
 
 X = pd.DataFrame([[1.0, 1.0, 1.0],
                   [2.0, 0.0, 4.0],
-                  [3.0, -2.0, 25.0]], columns=["foo", 'bar', 'baz'])
-X_trans = pd.DataFrame([[1.0, -1.0, 3.0],
-                        [1.0, -2.0, 21.0]], columns=["foo", 'bar', 'baz'])
+                  [3.0, -2.0, 25.0],
+                  [5.0, -8.0, 2.0],
+                  [6.0, -20.0, 5.0]], columns=["foo", 'bar', 'baz'])
 
-Y = pd.DataFrame([1.0, 2.0, 3.0], index=[0,0,1])
+Y = np.array(pd.DataFrame(X['foo']))
 
 
 def test_delta_transformer():
     fit_model = DoublePipeline(
-        [('xdelta', DeltaTransformer()), ('linreg', LinearRegression())],
+        [('xdelta', DeltaTransformer()), ('linreg', LinearRegression(fit_intercept=False))],
         [('ydelta', DeltaTransformer())]).fit(X, Y)
 
-    #print(fit_model.x_pipe_.steps[1][1])
-    #print fit_model.predict(X)
-    assert (fit_model.predict(X).equals(Y))
-
+    assert (np.isclose(fit_model.predict(X), np.squeeze(Y)).all())
+    assert (np.isclose(fit_model.x_pipe_.steps[-1][1].coef_[0], [1.0]))
 
 if __name__ == '__main__':
     test_delta_transformer()

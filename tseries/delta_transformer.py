@@ -5,10 +5,9 @@ Author: Mark Hamilton, mhamilton723@gmail.com
 """
 
 import numpy as np
-from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin, clone
-import warnings
-from sklearn.decomposition import PCA
+from sklearn.base import BaseEstimator, TransformerMixin
 import pandas as pd
+
 
 # TODO fix indexing
 class DeltaTransformer(BaseEstimator, TransformerMixin):
@@ -29,7 +28,6 @@ class DeltaTransformer(BaseEstimator, TransformerMixin):
 
     def fit(self, X, Y=None):
         if isinstance(X, np.ndarray):
-            print("Converting")
             X = pd.DataFrame(X)
 
         ''' X and Y are datasets in chronological order, or X is a time series '''
@@ -42,21 +40,28 @@ class DeltaTransformer(BaseEstimator, TransformerMixin):
     def _delta(self, data, omit=None):
         diff_data = data.diff()
         if omit is not None:
-            for colname in omit:
-                diff_data[colname] = data[colname]
+            for colnum in omit:
+                diff_data.iloc[:, colnum] = data.iloc[:, colnum]
         return diff_data.iloc[1:, :]
 
     def transform(self, X):
-        return self._delta(X, self.omit)
-
-    def inverse_transform(self, X):
+        if len(X.shape)<2:
+            X = np.expand_dims(X,1)
         if isinstance(X, np.ndarray):
             X = pd.DataFrame(X)
 
-        new_X = pd.concat([self.biases_, X])
+        return np.squeeze(self._delta(X, self.omit))
+
+    def inverse_transform(self, X):
+        if not isinstance(X, np.ndarray):
+            X = np.array(X)
+        if len(X.shape)<2:
+            X = np.expand_dims(X,1)
+
+        new_X = np.vstack((self.biases_, X))
         new_X = new_X.cumsum(axis=0)
         if self.omit is not None:
-            for colname in self.omit:
-                new_X[colname] = X[colname]
-                new_X[colname].iloc[0] = self.biases_[colname].iloc[0]
-        return new_X
+            for colnum in self.omit:
+                new_X[1:, colnum] = X[:, colnum]
+                new_X[0, colnum] = pd.DataFrame(self.biases_).iloc[0, colnum]
+        return np.squeeze(new_X)
