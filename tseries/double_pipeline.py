@@ -8,7 +8,6 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin, clone
 from sklearn.pipeline import Pipeline
 
-
 class DoublePipeline(BaseEstimator):
     """
     Base Class for Time Series Estimators
@@ -16,9 +15,9 @@ class DoublePipeline(BaseEstimator):
 
     def __init__(self, x_steps, y_steps):
         self.x_steps = x_steps
-        self.x_pipe_ = None
+        self.x_pipe_ = None  # type: Pipeline
         self.y_steps = y_steps
-        self.y_pipe_ = None
+        self.y_pipe_ = None  # type: Pipeline
 
     # TODO handle parameter setting
     def set_params(self, **params):

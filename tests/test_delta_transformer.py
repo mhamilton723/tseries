@@ -1,5 +1,3 @@
-from numpy.testing import assert_equal
-from sklearn.grid_search import GridSearchCV
 from TimeSeriesRegressor.tseries.delta_transformer import *
 import pandas as pd
 
