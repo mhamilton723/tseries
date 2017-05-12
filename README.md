@@ -8,7 +8,11 @@ Classes for working with time series in python using the sklearn ecosystem. Cont
 - Functions for proper cross validation of time series.
 - Other utilities ive found useful 
 
-Documentation is currently lagging behind development and pull requests are greatly appreciated! The latest stable release can be installed with:
+Documentation is currently lagging behind development and pull requests are greatly appreciated! 
+
+# Install
+
+The latest stable release can be installed with:
 
 `pip install tseries`
 
