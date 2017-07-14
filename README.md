@@ -1,7 +1,21 @@
-# TimeSeriesRegressor
-A wrapper estimator that transforms any sklearn regressor into a time series predictor or sequence to sequence mapper.
-The TSR internally transforms a regular dataset where the rows correspond to terms of a sequence into a sequence prediction dataset and
-learns a sequence to sequence predictor.
+# tseries
+
+Classes for working with time series in python using the sklearn ecosystem. Contains:
+
+- TimeSeriesRegressor: Turn any sklearn estimator into a time series estimator. Eg Linear Regression -> Vector Auto Regression (VAR)
+- Delta Transformer: Transform your time series to predict additive changes. When pipelining this one can create "Integrated"  time series models like the VARI
+- Double Pipeline: Add invertable transformations to your labels so that you can regress in different spaces and pull back to the original
+- Functions for proper cross validation of time series.
+- Other utilities ive found useful 
+
+Documentation is currently lagging behind development and pull requests are greatly appreciated! 
+
+# Install
+
+The latest stable release can be installed with:
+
+`pip install tseries`
+
 
 ## Requires
 Numpy, Pandas, SciKit-Learn,pickle
