@@ -1,4 +1,4 @@
-from TimeSeriesRegressor.tseries.delta_transformer import *
+from tseries.tseries.delta_transformer import *
 import pandas as pd
 
 X = pd.DataFrame([[1.0, 1.0, 1.0],
@@ -6,6 +6,7 @@ X = pd.DataFrame([[1.0, 1.0, 1.0],
                   [3.0, -1.0, 25.0],
                   [4.0, -1.0, 25.0],
                   [5.0, -1.0, 25.0]], columns=["foo", 'bar', 'baz'])
+
 X_trans = pd.DataFrame([[1.0, -1.0, 4.0],
                         [1.0, -1.0, 25.0],
                         [1.0, 0.0, 25.0],

@@ -1,5 +1,5 @@
 from sklearn.linear_model.base import LinearRegression
-from TimeSeriesRegressor.tseries import DoublePipeline, DeltaTransformer
+from tseries.tseries import DoublePipeline, DeltaTransformer
 import pandas as pd
 import numpy as np
 
