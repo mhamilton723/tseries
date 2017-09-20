@@ -1,6 +1,9 @@
+
 # tseries
 
 Classes for working with time series in python using the sklearn ecosystem. Contains:
+
+[![DOI](https://zenodo.org/badge/48011339.svg)](https://zenodo.org/badge/latestdoi/48011339)
 
 - TimeSeriesRegressor: Turn any sklearn estimator into a time series estimator. Eg Linear Regression -> Vector Auto Regression (VAR)
 - Delta Transformer: Transform your time series to predict additive changes. When pipelining this one can create "Integrated"  time series models like the VARI
@@ -55,7 +58,7 @@ See the ipython notebook for a longer interactive example!
 ## Install
 Clone this repo and call directly as a module. Have not added automatic install support yet.
 
-##Mechanics
+## Mechanics
 
 The TSR works by taking in a single (X) or two datasets (X,Y) of equal length. 
 In the single dataset case, the TSR assumes you would like to predict the next element in the dataset using the previous elements.
